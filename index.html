@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5f7f4">
+  <meta name="description" content="Split restaurant bills and shared expenses fairly. Add people, assign items, and calculate each person's exact share.">
+  <title>SplitMate — Smart Bill & Expense Splitter</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/calculator.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="SplitMate home">
+      <span class="brand-icon" aria-hidden="true">S</span>
+      <span>splitmate<span class="brand-dot">.</span></span>
+    </a>
+    <span class="topbar-note"><span class="status-dot"></span> Private by design · No account needed</span>
+  </header>
+
+  <main id="top" class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <p class="eyebrow">THE SMART WAY TO SPLIT</p>
+        <h1 id="page-title">Good times together.<br><span>Fair bills for everyone.</span></h1>
+        <p class="hero-description">Add your group, assign what everyone had, and let SplitMate do the maths — including tax and tip.</p>
+      </div>
+      <button class="button button-secondary sample-button" id="sample-button" type="button">
+        <span aria-hidden="true">✦</span> Try a sample bill
+      </button>
+    </section>
+
+    <div class="workspace-grid">
+      <section class="panel setup-panel" aria-label="Bill setup">
+        <div class="section-heading">
+          <div>
+            <p class="step-label">STEP 01</p>
+            <h2>Your group</h2>
+          </div>
+          <span class="count-pill" id="people-count">0 people</span>
+        </div>
+
+        <form id="person-form" class="inline-form">
+          <label class="sr-only" for="person-name">Person's name</label>
+          <input id="person-name" name="personName" type="text" maxlength="40" placeholder="Enter a name" autocomplete="off" required>
+          <button class="button button-dark" type="submit">Add person <span aria-hidden="true">＋</span></button>
+        </form>
+        <div id="people-list" class="people-list empty-list" aria-live="polite">
+          <p class="empty-hint">Your group will appear here.</p>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="section-heading expense-heading">
+          <div>
+            <p class="step-label">STEP 02</p>
+            <h2>Add expenses</h2>
+          </div>
+          <span class="muted-label">INR · ₹</span>
+        </div>
+
+        <form id="expense-form" class="expense-form">
+          <div class="form-row expense-main-fields">
+            <div class="field field-wide">
+              <label for="expense-name">Item or expense</label>
+              <input id="expense-name" name="expenseName" type="text" maxlength="60" placeholder="e.g. Paneer tikka" required>
+            </div>
+            <div class="field amount-field">
+              <label for="expense-amount">Amount (₹)</label>
+              <div class="money-input-wrap">
+                <span aria-hidden="true">₹</span>
+                <input id="expense-amount" name="expenseAmount" type="number" min="0.01" max="99999999" step="0.01" placeholder="0.00" inputmode="decimal" required>
+              </div>
+            </div>
+          </div>
+
+          <fieldset class="assignment-fieldset">
+            <legend>Who shared this item?</legend>
+            <p class="field-hint">Select everyone who should split this item's cost equally.</p>
+            <div id="assignment-options" class="assignment-options">
+              <p class="empty-hint">Add people to choose who shared an item.</p>
+            </div>
+          </fieldset>
+
+          <button class="button button-accent add-expense-button" type="submit">Add expense <span aria-hidden="true">＋</span></button>
+        </form>
+
+        <div class="section-divider"></div>
+
+        <div class="section-heading items-heading">
+          <div>
+            <p class="step-label">YOUR BILL</p>
+            <h2>Added items</h2>
+          </div>
+          <span class="count-pill" id="items-count">0 items</span>
+        </div>
+        <div id="expense-list" class="expense-list empty-list" aria-live="polite">
+          <p class="empty-hint">No expenses yet. Add your first item above.</p>
+        </div>
+      </section>
+
+      <aside class="panel summary-panel" aria-labelledby="summary-title">
+        <div class="summary-topline">
+          <div>
+            <p class="step-label step-label-light">LIVE CALCULATION</p>
+            <h2 id="summary-title">Bill summary</h2>
+          </div>
+          <span class="live-pill"><span class="live-dot"></span> Live</span>
+        </div>
+
+        <div class="rates-card">
+          <div class="rate-field">
+            <label for="tax-rate">Tax / GST</label>
+            <div class="rate-input-wrap">
+              <input id="tax-rate" type="number" min="0" max="100" step="0.01" value="0" inputmode="decimal">
+              <span>%</span>
+            </div>
+          </div>
+          <div class="rate-separator" aria-hidden="true"></div>
+          <div class="rate-field">
+            <label for="tip-rate">Tip</label>
+            <div class="rate-input-wrap">
+              <input id="tip-rate" type="number" min="0" max="100" step="0.01" value="0" inputmode="decimal">
+              <span>%</span>
+            </div>
+          </div>
+        </div>
+        <p class="rate-note">Tax and tip are calculated on the assigned item subtotal and shared proportionally.</p>
+
+        <div class="total-card">
+          <div class="total-card-heading">
+            <span>Total bill</span>
+            <span class="total-icon" aria-hidden="true">₹</span>
+          </div>
+          <p class="grand-total" id="grand-total">₹0.00</p>
+          <div class="total-breakdown">
+            <div><span>Items subtotal</span><strong id="subtotal-value">₹0.00</strong></div>
+            <div><span>Tax / GST</span><strong id="tax-value">₹0.00</strong></div>
+            <div><span>Tip</span><strong id="tip-value">₹0.00</strong></div>
+          </div>
+        </div>
+
+        <div id="unassigned-warning" class="warning-message" role="status" hidden></div>
+
+        <div class="people-shares-heading">
+          <h3>Each person's share</h3>
+          <span id="share-count">0 people</span>
+        </div>
+        <div id="share-list" class="share-list">
+          <div class="summary-empty">
+            <span class="summary-empty-icon" aria-hidden="true">↗</span>
+            <p>Your split will show up here once you add people and expenses.</p>
+          </div>
+        </div>
+
+        <div class="summary-actions">
+          <button id="copy-summary" class="button button-copy" type="button" disabled><span aria-hidden="true">▣</span> Copy breakdown</button>
+          <button id="download-csv" class="button button-outline" type="button" disabled aria-label="Download the bill breakdown as a CSV file">Download CSV</button>
+        </div>
+        <p class="privacy-note"><span aria-hidden="true">⌁</span> Your calculations stay in this browser. Nothing is uploaded.</p>
+      </aside>
+    </div>
+
+    <p id="announcement" class="sr-only" role="status" aria-live="polite"></p>
+  </main>
+
+  <footer class="site-footer">
+    <span>SplitMate · Smart Bill & Expense Splitter</span>
+    <span>Built with HTML, CSS & JavaScript</span>
+  </footer>
+</body>
+</html>

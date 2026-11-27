@@ -1,0 +1,11 @@
+{
+  "name": "smart-bill-expense-splitter",
+  "version": "1.0.0",
+  "description": "A responsive bill splitter with item-level assignments, tax, tip, and exact share calculations.",
+  "scripts": {
+    "test": "node tests/calculator.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
